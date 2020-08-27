@@ -23,12 +23,14 @@ exports.up = (knex) => {
       .onDelete("SET NULL")
       .onUpdate("CASCADE");
 
-    table.timestamp("retirada").defaultTo(knex.fn.now());
-    table.timestamp("devolucao").notNullable();
+    table.timestamp("data_de_retirada").defaultTo(knex.fn.now());
+    table.timestamp("data_para_devolucao").notNullable();
 
     table.boolean("renovacao").defaultTo(false);
-    table.integer("renovacaoCount").defaultTo(0);
-    table.boolean("entregue").defaultTo(false);
+    table.integer("renovacao_quantidade").defaultTo(0);
+
+    table.boolean("devolvido").defaultTo(false);
+    table.timestamp("data_da_devolucao").defaultTo(null);
 
     table.timestamp("created_at").defaultTo(knex.fn.now());
     table.timestamp("updated_at").defaultTo(knex.fn.now());
