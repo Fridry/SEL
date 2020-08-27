@@ -3,7 +3,7 @@ const knex = require("../database");
 module.exports = {
   async index(req, res, next) {
     try {
-      const results = await knex("livros");
+      const results = await knex("atendentes");
 
       return res.json(results);
     } catch (error) {
@@ -15,7 +15,7 @@ module.exports = {
     const { id } = req.params;
 
     try {
-      const results = await knex("livros").where({ id });
+      const results = await knex("atendentes").where({ id });
 
       return res.json(results);
     } catch (error) {
@@ -24,39 +24,18 @@ module.exports = {
   },
 
   async create(req, res, next) {
-    const {
-      titulo,
-      autor,
-      sinopse,
-      capa,
-      serie,
-      volume,
-      isbn,
-      editora,
-      numero_paginas,
-      copia,
-      disponivel,
-      motivo_indisponibilidade,
-      baixa,
-    } = req.body;
+    const { nome, data_nascimento, cpf, email, telefone, senha } = req.body;
 
     const trx = await knex.transaction();
 
     try {
-      await trx("livros").insert({
-        titulo,
-        autor,
-        sinopse,
-        capa,
-        serie,
-        volume,
-        isbn,
-        editora,
-        numero_paginas,
-        copia,
-        disponivel,
-        motivo_indisponibilidade,
-        baixa,
+      await trx("atendentes").insert({
+        nome,
+        data_nascimento,
+        cpf,
+        email,
+        telefone,
+        senha,
       });
 
       await trx.commit();
@@ -72,40 +51,19 @@ module.exports = {
   async update(req, res, next) {
     const { id } = req.params;
 
-    const {
-      titulo,
-      autor,
-      sinopse,
-      capa,
-      serie,
-      volume,
-      isbn,
-      editora,
-      numero_paginas,
-      copia,
-      disponivel,
-      motivo_indisponibilidade,
-      baixa,
-    } = req.body;
+    const { nome, data_nascimento, cpf, email, telefone, senha } = req.body;
 
     const trx = await knex.transaction();
 
     try {
-      await trx("livros")
+      await trx("atendentes")
         .update({
-          titulo,
-          autor,
-          sinopse,
-          capa,
-          serie,
-          volume,
-          isbn,
-          editora,
-          numero_paginas,
-          copia,
-          disponivel,
-          motivo_indisponibilidade,
-          baixa,
+          nome,
+          data_nascimento,
+          cpf,
+          email,
+          telefone,
+          senha,
           updated_at: knex.fn.now(),
         })
         .where({ id });
@@ -126,7 +84,7 @@ module.exports = {
     const trx = await knex.transaction();
 
     try {
-      await trx("livros").where({ id }).delete();
+      await trx("atendentes").where({ id }).delete();
 
       await trx.commit();
 

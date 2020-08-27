@@ -17,6 +17,8 @@ exports.seed = function (knex) {
           isbn: "978-8535914849",
           editora: "Companhia das Letras",
           numero_paginas: 416,
+          disponivel: false,
+          motivo_indisponibilidade: "Emprestado",
         },
       ]);
     });

@@ -27,6 +27,7 @@ exports.up = (knex) => {
     table.timestamp("data_para_devolucao").notNullable();
 
     table.boolean("renovacao").defaultTo(false);
+    table.timestamp("data_da_renovacao").defaultTo(null);
     table.integer("renovacao_quantidade").defaultTo(0);
 
     table.boolean("devolvido").defaultTo(false);

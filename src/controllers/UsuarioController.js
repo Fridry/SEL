@@ -106,6 +106,7 @@ module.exports = {
           bairro,
           cep,
           cidade,
+          updated_at: knex.fn.now(),
         })
         .where({ id });
 
