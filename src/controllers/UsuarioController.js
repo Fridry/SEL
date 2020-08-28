@@ -1,4 +1,5 @@
 const knex = require("../database");
+const bcrypt = require("bcrypt");
 
 module.exports = {
   async index(req, res, next) {
@@ -43,6 +44,9 @@ module.exports = {
     const trx = await knex.transaction();
 
     try {
+      const salt = await bcrypt.genSalt(10);
+      const hash = await bcrypt.hash(senha, salt);
+
       await trx("usuarios").insert({
         nome,
         genero,
@@ -51,7 +55,7 @@ module.exports = {
         rg,
         email,
         telefone,
-        senha,
+        senha: hash,
         rua,
         numero,
         bairro,
@@ -91,6 +95,9 @@ module.exports = {
     const trx = await knex.transaction();
 
     try {
+      const salt = await bcrypt.genSalt(10);
+      const hash = await bcrypt.hash(senha, salt);
+
       await trx("usuarios")
         .update({
           nome,
@@ -100,7 +107,7 @@ module.exports = {
           rg,
           email,
           telefone,
-          senha,
+          senha: hash,
           rua,
           numero,
           bairro,

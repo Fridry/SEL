@@ -6,6 +6,7 @@ const UsuarioController = require("./controllers/UsuarioController");
 const LivroController = require("./controllers/LivroController");
 const AtendenteController = require("./controllers/AtendenteController");
 const EmprestimoController = require("./controllers/EmprestimoController");
+const ReservaController = require("./controllers/ReservaController");
 
 routes
   .get("/usuarios", UsuarioController.index)
@@ -34,5 +35,12 @@ routes
   .post("/emprestimos", EmprestimoController.create)
   .put("/emprestimos/:id", EmprestimoController.update)
   .delete("/emprestimos/:id", EmprestimoController.delete);
+
+routes
+  .get("/reservas", ReservaController.index)
+  .get("/reservas/:id", ReservaController.show)
+  .post("/reservas", ReservaController.create)
+  .put("/reservas/:id", ReservaController.update)
+  .delete("/reservas/:id", ReservaController.delete);
 
 module.exports = routes;

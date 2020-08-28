@@ -1,10 +1,9 @@
 const knex = require("../database");
-const bcrypt = require("bcrypt");
 
 module.exports = {
   async index(req, res, next) {
     try {
-      const results = await knex("atendentes");
+      const results = await knex("reservas");
 
       return res.json(results);
     } catch (error) {
@@ -16,7 +15,7 @@ module.exports = {
     const { id } = req.params;
 
     try {
-      const results = await knex("atendentes").where({ id });
+      const results = await knex("reservas").where({ id });
 
       return res.json(results);
     } catch (error) {
@@ -25,21 +24,24 @@ module.exports = {
   },
 
   async create(req, res, next) {
-    const { nome, data_nascimento, cpf, email, telefone, senha } = req.body;
+    const { usuario_id, livro_id } = req.body;
 
     const trx = await knex.transaction();
 
     try {
-      const salt = await bcrypt.genSalt(10);
-      const hash = await bcrypt.hash(senha, salt);
+      const livroDisponivel = await trx("livros").where({
+        id: livro_id,
+        disponivel: true,
+      });
 
-      await trx("atendentes").insert({
-        nome,
-        data_nascimento,
-        cpf,
-        email,
-        telefone,
-        senha: hash,
+      if (livroDisponivel.length > 0)
+        return res.json({
+          error: "Não foi possivel realizar a reserva. Livro Disponível",
+        });
+
+      await trx("reservas").insert({
+        usuario_id,
+        livro_id,
       });
 
       await trx.commit();
@@ -55,22 +57,15 @@ module.exports = {
   async update(req, res, next) {
     const { id } = req.params;
 
-    const { nome, data_nascimento, cpf, email, telefone, senha } = req.body;
+    const { usuario_id, livro_id } = req.body;
 
     const trx = await knex.transaction();
 
     try {
-      const salt = await bcrypt.genSalt(10);
-      const hash = await bcrypt.hash(senha, salt);
-
-      await trx("atendentes")
+      await trx("reservas")
         .update({
-          nome,
-          data_nascimento,
-          cpf,
-          email,
-          telefone,
-          senha: hash,
+          usuario_id,
+          livro_id,
           updated_at: knex.fn.now(),
         })
         .where({ id });
@@ -91,7 +86,7 @@ module.exports = {
     const trx = await knex.transaction();
 
     try {
-      await trx("atendentes").where({ id }).delete();
+      await trx("reservas").where({ id }).delete();
 
       await trx.commit();
 

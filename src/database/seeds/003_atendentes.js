@@ -11,7 +11,7 @@ exports.seed = function (knex) {
           cpf: "000.000.000-01",
           email: "admin@biblioteca.com",
           telefone: "(71) 99999-9999",
-          senha: "admin",
+          senha: "$2y$10$3rKk4PBpSD5j9Cv9hfhDfeJbbgxz1v52n0mXC6u91GlZrykIf7aPK",
         },
       ]);
     });

@@ -13,7 +13,7 @@ exports.seed = function (knex) {
           rg: "16.656.735-8",
           email: "diegolevi@ladder.com.br",
           telefone: "(71) 99765-3076",
-          senha: "hGrozRL7kM",
+          senha: "$2b$10$3NFLwhb04BXHz0CR0/RLDeJ2S3cV8ORgFGQ.5aqyZVGnEr0Z1J6IO",
           rua: "Travessa Frederico Costa",
           numero: 269,
           bairro: "Periperi",
