@@ -40,6 +40,11 @@ module.exports = {
     const trx = await knex.transaction();
 
     try {
+      const usuario = await trx("usuarios").where({ id: usuario_id });
+
+      if (usuario.length === 0)
+        return res.json({ error: "Usuário não cadastrado no sistema" });
+
       const livroDisponivel = await trx("livros").where({
         id: livro_id,
         disponivel: true,
@@ -99,6 +104,11 @@ module.exports = {
     const trx = await knex.transaction();
 
     try {
+      const usuario = await trx("usuarios").where({ id: usuario_id });
+
+      if (usuario.length === 0)
+        return res.json({ error: "Usuário não cadastrado no sistema" });
+
       await trx("emprestimos")
         .update({
           usuario_id,
