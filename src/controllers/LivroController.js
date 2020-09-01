@@ -28,7 +28,6 @@ module.exports = {
       titulo,
       autor,
       sinopse,
-      capa,
       serie,
       volume,
       isbn,
@@ -40,6 +39,8 @@ module.exports = {
       baixa,
     } = req.body;
 
+    const { filename } = req.file;
+
     const trx = await knex.transaction();
 
     try {
@@ -47,7 +48,7 @@ module.exports = {
         titulo,
         autor,
         sinopse,
-        capa,
+        capa: filename,
         serie,
         volume,
         isbn,

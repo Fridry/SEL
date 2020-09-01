@@ -1,8 +1,11 @@
 const express = require("express");
+const multer = require("multer");
 
+const uploadConfig = require("./config/upload");
 const Login = require("./middleware/login");
 
 const routes = express.Router();
+const upload = multer(uploadConfig);
 
 const UsuarioController = require("./controllers/UsuarioController");
 const LivroController = require("./controllers/LivroController");
@@ -21,8 +24,18 @@ routes
 routes
   .get("/livros", LivroController.index)
   .get("/livros/:id", LivroController.show)
-  .post("/livros", Login.atendente, LivroController.create)
-  .put("/livros/:id", Login.atendente, LivroController.update)
+  .post(
+    "/livros",
+    upload.single("capa"),
+    Login.atendente,
+    LivroController.create
+  )
+  .put(
+    "/livros/:id",
+    upload.single("capa"),
+    Login.atendente,
+    LivroController.update
+  )
   .delete("/livros/:id", Login.atendente, LivroController.delete);
 
 routes
