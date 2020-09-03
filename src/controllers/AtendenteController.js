@@ -56,6 +56,11 @@ module.exports = {
   async update(req, res, next) {
     const { id } = req.params;
 
+    const token_id = req.usuario.id;
+
+    if (id !== token_id)
+      return res.status(401).send({ error: "Usuário não autorizado" });
+
     const { nome, data_nascimento, cpf, email, telefone, senha } = req.body;
 
     const trx = await knex.transaction();
@@ -88,6 +93,11 @@ module.exports = {
 
   async delete(req, res, next) {
     const { id } = req.params;
+
+    const token_id = req.usuario.id;
+
+    if (id !== token_id)
+      return res.status(401).send({ error: "Usuário não autorizado" });
 
     const trx = await knex.transaction();
 
