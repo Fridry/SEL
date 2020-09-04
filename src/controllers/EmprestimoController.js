@@ -2,8 +2,92 @@ const knex = require("../database");
 
 module.exports = {
   async index(req, res, next) {
+    const {
+      page = 1,
+      usuario_id,
+      livro_id,
+      data_de_retirada,
+      data_para_devolucao,
+      data_da_devolucao,
+    } = req.query;
+
+    const limit = 10;
+
     try {
-      const results = await knex("emprestimos");
+      const query = knex("emprestimos")
+        .limit(limit)
+        .offset((page - 1) * limit);
+
+      const countObj = knex("emprestimos").count();
+
+      if (usuario_id) {
+        query
+          .where({ usuario_id })
+          .limit(limit)
+          .offset((page - 1) * limit);
+
+        countObj.where({ usuario_id });
+      }
+
+      if (livro_id) {
+        query
+          .where({ livro_id })
+          .limit(limit)
+          .offset((page - 1) * limit);
+
+        countObj.where({ livro_id });
+      }
+
+      if (data_para_devolucao) {
+        query
+          .whereBetween("data_para_devolucao", [
+            `${data_para_devolucao}T00:00:00.000Z`,
+            `${data_para_devolucao}T23:59:59.000Z`,
+          ])
+          .limit(limit)
+          .offset((page - 1) * limit);
+
+        countObj.whereBetween("data_para_devolucao", [
+          `${data_para_devolucao}T00:00:00.000Z`,
+          `${data_para_devolucao}T23:59:59.000Z`,
+        ]);
+      }
+
+      if (data_de_retirada) {
+        query
+          .whereBetween("data_de_retirada", [
+            `${data_de_retirada}T00:00:00.000Z`,
+            `${data_de_retirada}T23:59:59.000Z`,
+          ])
+          .limit(limit)
+          .offset((page - 1) * limit);
+
+        countObj.whereBetween("data_de_retirada", [
+          `${data_de_retirada}T00:00:00.000Z`,
+          `${data_de_retirada}T23:59:59.000Z`,
+        ]);
+      }
+
+      if (data_da_devolucao) {
+        query
+          .whereBetween("data_da_devolucao", [
+            `${data_da_devolucao}T00:00:00.000Z`,
+            `${data_da_devolucao}T23:59:59.000Z`,
+          ])
+          .limit(limit)
+          .offset((page - 1) * limit);
+
+        countObj.whereBetween("data_da_devolucao", [
+          `${data_da_devolucao}T00:00:00.000Z`,
+          `${data_da_devolucao}T23:59:59.000Z`,
+        ]);
+      }
+
+      const [count] = await countObj;
+
+      res.header("X-Total-Count", count["count"]);
+
+      const results = await query;
 
       return res.json(results);
     } catch (error) {

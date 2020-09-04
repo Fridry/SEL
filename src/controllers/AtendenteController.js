@@ -4,8 +4,30 @@ const jwt = require("jsonwebtoken");
 
 module.exports = {
   async index(req, res, next) {
+    const { nome, page = 1 } = req.query;
+
+    const limit = 10;
     try {
-      const results = await knex("atendentes");
+      const query = knex("atendentes")
+        .limit(limit)
+        .offset((page - 1) * limit);
+
+      const countObj = knex("atendentes").count();
+
+      if (nome) {
+        query
+          .where("nome", "ilike", `%${nome}%`)
+          .limit(limit)
+          .offset((page - 1) * limit);
+
+        countObj.where("nome", "ilike", `%${nome}%`);
+      }
+
+      const [count] = await countObj;
+
+      res.header("X-Total-Count", count["count"]);
+
+      const results = await query;
 
       return res.json(results);
     } catch (error) {
@@ -15,6 +37,8 @@ module.exports = {
 
   async show(req, res, next) {
     const { id } = req.params;
+
+    const { nome } = req.query;
 
     try {
       const results = await knex("atendentes").where({ id });

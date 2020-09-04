@@ -2,8 +2,39 @@ const knex = require("../database");
 
 module.exports = {
   async index(req, res, next) {
+    const { usuario_id, livro_id, page = 1 } = req.query;
+
+    const limit = 10;
     try {
-      const results = await knex("reservas");
+      const query = knex("reservas")
+        .limit(limit)
+        .offset((page - 1) * limit);
+
+      const countObj = knex("reservas").count();
+
+      if (usuario_id) {
+        query
+          .where({ usuario_id })
+          .limit(limit)
+          .offset((page - 1) * limit);
+
+        countObj.where({ usuario_id });
+      }
+
+      if (livro_id) {
+        query
+          .where({ livro_id })
+          .limit(limit)
+          .offset((page - 1) * limit);
+
+        countObj.where({ livro_id });
+      }
+
+      const [count] = await countObj;
+
+      res.header("X-Total-Count", count["count"]);
+
+      const results = await query;
 
       return res.json(results);
     } catch (error) {
