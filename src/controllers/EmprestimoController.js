@@ -9,9 +9,8 @@ module.exports = {
       data_de_retirada,
       data_para_devolucao,
       data_da_devolucao,
+      limit = 10,
     } = req.query;
-
-    const limit = 10;
 
     try {
       const query = knex("emprestimos")

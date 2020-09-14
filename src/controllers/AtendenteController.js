@@ -4,9 +4,8 @@ const jwt = require("jsonwebtoken");
 
 module.exports = {
   async index(req, res, next) {
-    const { nome, page = 1 } = req.query;
+    const { nome, page = 1, limit = 10 } = req.query;
 
-    const limit = 10;
     try {
       const query = knex("atendentes")
         .limit(limit)

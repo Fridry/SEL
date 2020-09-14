@@ -6,9 +6,8 @@ require("dotenv/config");
 
 module.exports = {
   async index(req, res, next) {
-    const { nome, genero, page = 1 } = req.query;
+    const { nome, genero, page = 1, limit = 10 } = req.query;
 
-    const limit = 10;
     try {
       const query = knex("usuarios")
         .limit(limit)

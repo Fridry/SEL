@@ -2,9 +2,8 @@ const knex = require("../database");
 
 module.exports = {
   async index(req, res, next) {
-    const { titulo, autor, page = 1 } = req.query;
+    const { titulo, autor, page = 1, limit = 10 } = req.query;
 
-    const limit = 10;
     try {
       const query = knex("livros")
         .limit(limit)
