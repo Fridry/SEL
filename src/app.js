@@ -1,6 +1,7 @@
 const express = require("express");
 const { errors } = require("celebrate");
 const cors = require("cors");
+const path = require("path");
 
 const routes = require("./routes");
 
@@ -19,6 +20,8 @@ app.use(express.json());
 
 app.use(routes);
 app.use(errors());
+
+app.use("/uploads", express.static(path.resolve(__dirname, "..", "uploads")));
 
 //404 - Not Found
 app.use((req, res, next) => {
