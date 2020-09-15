@@ -2,12 +2,20 @@ const knex = require("../database");
 
 module.exports = {
   async index(req, res, next) {
-    const { titulo, autor, page = 1, limit = 10 } = req.query;
+    const {
+      titulo,
+      autor,
+      page = 1,
+      limit = 10,
+      orderCol = "id",
+      order = "asc",
+    } = req.query;
 
     try {
       const query = knex("livros")
         .limit(limit)
-        .offset((page - 1) * limit);
+        .offset((page - 1) * limit)
+        .orderBy(orderCol, order);
 
       const countObj = knex("livros").count();
 
@@ -119,6 +127,8 @@ module.exports = {
       baixa,
     } = req.body;
 
+    const { filename } = req.file;
+
     const trx = await knex.transaction();
 
     try {
@@ -127,7 +137,7 @@ module.exports = {
           titulo,
           autor,
           sinopse,
-          capa,
+          capa: filename,
           serie,
           volume,
           isbn,
