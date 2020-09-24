@@ -10,12 +10,15 @@ module.exports = {
       data_para_devolucao,
       data_da_devolucao,
       limit = 10,
+      orderCol = "id",
+      order = "asc",
     } = req.query;
 
     try {
       const query = knex("emprestimos")
         .limit(limit)
-        .offset((page - 1) * limit);
+        .offset((page - 1) * limit)
+        .orderBy(orderCol, order);
 
       const countObj = knex("emprestimos").count();
 

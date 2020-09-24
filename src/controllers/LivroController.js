@@ -115,7 +115,6 @@ module.exports = {
       titulo,
       autor,
       sinopse,
-      capa,
       serie,
       volume,
       isbn,

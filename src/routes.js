@@ -8,23 +8,23 @@ const Login = require("./middleware/login");
 const routes = Router();
 const upload = multer(uploadConfig);
 
+const SessionController = require("./controllers/SessionController");
 const UsuarioController = require("./controllers/UsuarioController");
 const LivroController = require("./controllers/LivroController");
 const AtendenteController = require("./controllers/AtendenteController");
 const EmprestimoController = require("./controllers/EmprestimoController");
 const ReservaController = require("./controllers/ReservaController");
-const { join } = require("./database");
 
 routes
   .post(
-    "/usuarios/login",
+    "/login",
     celebrate({
       [Segments.BODY]: Joi.object().keys({
         email: Joi.string().required().email(),
         senha: Joi.string().required(),
       }),
     }),
-    UsuarioController.login
+    SessionController.store
   )
   .get("/usuarios", UsuarioController.index)
   .get("/usuarios/:id", UsuarioController.show)

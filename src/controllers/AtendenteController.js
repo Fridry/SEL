@@ -4,12 +4,19 @@ const jwt = require("jsonwebtoken");
 
 module.exports = {
   async index(req, res, next) {
-    const { nome, page = 1, limit = 10 } = req.query;
+    const {
+      nome,
+      page = 1,
+      limit = 10,
+      orderCol = "id",
+      order = "asc",
+    } = req.query;
 
     try {
       const query = knex("atendentes")
         .limit(limit)
-        .offset((page - 1) * limit);
+        .offset((page - 1) * limit)
+        .orderBy(orderCol, order);
 
       const countObj = knex("atendentes").count();
 

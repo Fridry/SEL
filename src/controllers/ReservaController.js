@@ -2,12 +2,20 @@ const knex = require("../database");
 
 module.exports = {
   async index(req, res, next) {
-    const { usuario_id, livro_id, page = 1, limit = 10 } = req.query;
+    const {
+      usuario_id,
+      livro_id,
+      page = 1,
+      limit = 10,
+      orderCol = "id",
+      order = "asc",
+    } = req.query;
 
     try {
       const query = knex("reservas")
         .limit(limit)
-        .offset((page - 1) * limit);
+        .offset((page - 1) * limit)
+        .orderBy(orderCol, order);
 
       const countObj = knex("reservas").count();
 
