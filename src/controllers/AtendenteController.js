@@ -165,7 +165,7 @@ module.exports = {
       const payload = { id: usuario.id, role: "atendente" };
 
       const token = jwt.sign(payload, process.env.SECRET, {
-        expiresIn: "1d",
+        expiresIn: "7d",
       });
 
       return res.json(token);

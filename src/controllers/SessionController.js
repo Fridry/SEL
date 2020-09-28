@@ -23,7 +23,7 @@ module.exports = {
           error: "A senha informada está incorreta",
         });
 
-      const payload = { id: usuario.id };
+      const payload = { id: usuario.id, role: "usuario" };
 
       const token = jwt.sign(payload, process.env.SECRET, {
         expiresIn: "1d",

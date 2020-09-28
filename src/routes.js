@@ -71,7 +71,7 @@ routes
         id: Joi.number().required(),
       }),
     }),
-    Login.usuario,
+    Login,
     UsuarioController.update
   )
   .delete(
@@ -81,26 +81,16 @@ routes
         id: Joi.number().required(),
       }),
     }),
-    Login.usuario,
+    Login,
     UsuarioController.delete
   );
 
 routes
   .get("/livros", LivroController.index)
   .get("/livros/:id", LivroController.show)
-  .post(
-    "/livros",
-    upload.single("capa"),
-    Login.atendente,
-    LivroController.create
-  )
-  .put(
-    "/livros/:id",
-    upload.single("capa"),
-    Login.atendente,
-    LivroController.update
-  )
-  .delete("/livros/:id", Login.atendente, LivroController.delete);
+  .post("/livros", upload.single("capa"), Login, LivroController.create)
+  .put("/livros/:id", upload.single("capa"), Login, LivroController.update)
+  .delete("/livros/:id", Login, LivroController.delete);
 
 routes
   .post(
@@ -127,7 +117,7 @@ routes
         telefone: Joi.string().required(),
       }),
     }),
-    Login.atendente,
+    Login,
     AtendenteController.create
   )
   .put(
@@ -145,7 +135,7 @@ routes
         id: Joi.number().required(),
       }),
     }),
-    Login.atendente,
+    Login,
     AtendenteController.update
   )
   .delete(
@@ -155,7 +145,7 @@ routes
         id: Joi.number().required(),
       }),
     }),
-    Login.atendente,
+    Login,
     AtendenteController.delete
   );
 
@@ -172,7 +162,7 @@ routes
         data_para_devolucao: Joi.date().required(),
       }),
     }),
-    Login.atendente,
+    Login,
     EmprestimoController.create
   )
   .put(
@@ -191,7 +181,7 @@ routes
         id: Joi.number().required(),
       }),
     }),
-    Login.atendente,
+    Login,
     EmprestimoController.update
   )
   .delete(
@@ -201,7 +191,7 @@ routes
         id: Joi.number().required(),
       }),
     }),
-    Login.atendente,
+    Login,
     EmprestimoController.delete
   );
 
@@ -216,7 +206,7 @@ routes
         livro_id: Joi.number().required(),
       }),
     }),
-    Login.atendente,
+    Login,
     ReservaController.create
   )
   .put(
@@ -230,7 +220,7 @@ routes
         id: Joi.number().required(),
       }),
     }),
-    Login.atendente,
+    Login,
     ReservaController.update
   )
   .delete(
@@ -240,7 +230,7 @@ routes
         id: Joi.number().required(),
       }),
     }),
-    Login.atendente,
+    Login,
     ReservaController.delete
   );
 

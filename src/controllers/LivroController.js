@@ -126,7 +126,7 @@ module.exports = {
       baixa,
     } = req.body;
 
-    const { filename } = req.file;
+    const capa = req.file !== undefined ? req.file.filename : req.body.capa;
 
     const trx = await knex.transaction();
 
@@ -136,7 +136,7 @@ module.exports = {
           titulo,
           autor,
           sinopse,
-          capa: filename,
+          capa,
           serie,
           volume,
           isbn,

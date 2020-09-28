@@ -63,43 +63,13 @@ module.exports = {
   },
 
   async create(req, res, next) {
-    const {
-      nome,
-      genero,
-      data_nascimento,
-      cpf,
-      rg,
-      email,
-      telefone,
-      senha,
-      rua,
-      numero,
-      bairro,
-      cep,
-      cidade,
-    } = req.body;
-
     const trx = await knex.transaction();
 
     try {
       const salt = await bcrypt.genSalt(10);
       const hash = await bcrypt.hash(senha, salt);
 
-      await trx("usuarios").insert({
-        nome,
-        genero,
-        data_nascimento,
-        cpf,
-        rg,
-        email,
-        telefone,
-        senha: hash,
-        rua,
-        numero,
-        bairro,
-        cep,
-        cidade,
-      });
+      await trx("usuarios").insert(req.body);
 
       await trx.commit();
 
@@ -114,51 +84,20 @@ module.exports = {
   async update(req, res, next) {
     const { id } = req.params;
 
-    const token_id = req.usuario.id;
+    const { id: token_id, role } = req.usuario;
 
-    if (id !== token_id)
+    if (id !== token_id && role !== "atendente")
       return res.status(401).send({ error: "Usuário não autorizado" });
-
-    const {
-      nome,
-      genero,
-      data_nascimento,
-      cpf,
-      rg,
-      email,
-      telefone,
-      senha,
-      rua,
-      numero,
-      bairro,
-      cep,
-      cidade,
-    } = req.body;
 
     const trx = await knex.transaction();
 
     try {
-      const salt = await bcrypt.genSalt(10);
-      const hash = await bcrypt.hash(senha, salt);
+      if (req.body.senha)
+        req.body.senha = await bcrypt.hash(req.body.senha, 10);
 
-      await trx("usuarios")
-        .update({
-          nome,
-          genero,
-          data_nascimento,
-          cpf,
-          rg,
-          email,
-          telefone,
-          senha: hash,
-          rua,
-          numero,
-          bairro,
-          cep,
-          cidade,
-          updated_at: knex.fn.now(),
-        })
-        .where({ id });
+      req.body.updated_at = knex.fn.now();
+
+      await trx("usuarios").update(req.body).where({ id });
 
       await trx.commit();
 
@@ -173,9 +112,9 @@ module.exports = {
   async delete(req, res, next) {
     const { id } = req.params;
 
-    const token_id = req.usuario.id;
+    const { id: token_id, role } = req.usuario;
 
-    if (id !== token_id)
+    if (id !== token_id && role === "usuario")
       return res.status(401).send({ error: "Usuário não autorizado" });
 
     const trx = await knex.transaction();
