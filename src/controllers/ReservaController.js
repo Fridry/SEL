@@ -3,8 +3,8 @@ const knex = require("../database");
 module.exports = {
   async index(req, res, next) {
     const {
-      usuario_id,
-      livro_id,
+      usuario,
+      titulo,
       page = 1,
       limit = 10,
       orderCol = "id",
@@ -13,28 +13,36 @@ module.exports = {
 
     try {
       const query = knex("reservas")
+        .join("usuarios", "usuarios.id", "=", "reservas.usuario_id")
+        .join("livros", "livros.id", "=", "reservas.livro_id")
+        .select("reservas.*", "usuarios.nome", "livros.titulo", "livros.autor")
         .limit(limit)
         .offset((page - 1) * limit)
         .orderBy(orderCol, order);
 
-      const countObj = knex("reservas").count();
+      const countObj = knex("reservas")
+        .count()
+        .join("usuarios", "usuarios.id", "=", "reservas.usuario_id")
+        .join("livros", "livros.id", "=", "reservas.livro_id")
+        .select("reservas.*", "usuarios.nome", "livros.titulo")
+        .groupBy("reservas.id", "usuarios.nome", "livros.titulo");
 
-      if (usuario_id) {
+      if (usuario) {
         query
-          .where({ usuario_id })
+          .where("usuarios.nome", "ilike", `%${usuario}%`)
           .limit(limit)
           .offset((page - 1) * limit);
 
-        countObj.where({ usuario_id });
+        countObj.where("usuarios.nome", "ilike", `%${usuario}%`);
       }
 
-      if (livro_id) {
+      if (titulo) {
         query
-          .where({ livro_id })
+          .where("livros.titulo", "ilike", `%${titulo}%`)
           .limit(limit)
           .offset((page - 1) * limit);
 
-        countObj.where({ livro_id });
+        countObj.where("livros.titulo", "ilike", `%${titulo}%`);
       }
 
       const [count] = await countObj;
@@ -53,7 +61,11 @@ module.exports = {
     const { id } = req.params;
 
     try {
-      const results = await knex("reservas").where({ id });
+      const results = await knex("reservas")
+        .where("reservas.id", id)
+        .join("usuarios", "usuarios.id", "=", "reservas.usuario_id")
+        .join("livros", "livros.id", "=", "reservas.livro_id")
+        .select("reservas.*", "usuarios.nome", "livros.titulo");
 
       return res.json(results);
     } catch (error) {
