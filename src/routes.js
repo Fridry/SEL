@@ -158,7 +158,6 @@ routes
       [Segments.BODY]: Joi.object().keys({
         usuario_id: Joi.number().required(),
         livro_id: Joi.number().required(),
-        atendente_id: Joi.number().required(),
         data_para_devolucao: Joi.date().required(),
       }),
     }),

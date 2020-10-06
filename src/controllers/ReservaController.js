@@ -15,7 +15,22 @@ module.exports = {
       const query = knex("reservas")
         .join("usuarios", "usuarios.id", "=", "reservas.usuario_id")
         .join("livros", "livros.id", "=", "reservas.livro_id")
-        .select("reservas.*", "usuarios.nome", "livros.titulo", "livros.autor")
+        .select(
+          "reservas.*",
+          "usuarios.nome",
+          "usuarios.telefone",
+          "usuarios.email",
+          "livros.titulo",
+          "livros.autor"
+        )
+        .groupBy(
+          "reservas.id",
+          "usuarios.nome",
+          "usuarios.email",
+          "usuarios.telefone",
+          "livros.titulo",
+          "livros.autor"
+        )
         .limit(limit)
         .offset((page - 1) * limit)
         .orderBy(orderCol, order);
@@ -24,8 +39,22 @@ module.exports = {
         .count()
         .join("usuarios", "usuarios.id", "=", "reservas.usuario_id")
         .join("livros", "livros.id", "=", "reservas.livro_id")
-        .select("reservas.*", "usuarios.nome", "livros.titulo")
-        .groupBy("reservas.id", "usuarios.nome", "livros.titulo");
+        .select(
+          "reservas.*",
+          "usuarios.nome",
+          "usuarios.telefone",
+          "usuarios.email",
+          "livros.titulo",
+          "livros.autor"
+        )
+        .groupBy(
+          "reservas.id",
+          "usuarios.nome",
+          "usuarios.email",
+          "usuarios.telefone",
+          "livros.titulo",
+          "livros.autor"
+        );
 
       if (usuario) {
         query

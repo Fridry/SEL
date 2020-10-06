@@ -4,8 +4,8 @@ module.exports = {
   async index(req, res, next) {
     const {
       page = 1,
-      usuario_id,
-      livro_id,
+      usuario,
+      titulo,
       data_de_retirada,
       data_para_devolucao,
       data_da_devolucao,
@@ -16,28 +16,57 @@ module.exports = {
 
     try {
       const query = knex("emprestimos")
+        .join("usuarios", "usuarios.id", "=", "emprestimos.usuario_id")
+        .join("livros", "livros.id", "=", "emprestimos.livro_id")
+        .select(
+          "emprestimos.*",
+          "usuarios.nome",
+          "livros.titulo",
+          "livros.autor"
+        )
+        .groupBy(
+          "emprestimos.id",
+          "usuarios.nome",
+          "livros.titulo",
+          "livros.autor"
+        )
         .limit(limit)
         .offset((page - 1) * limit)
         .orderBy(orderCol, order);
 
-      const countObj = knex("emprestimos").count();
+      const countObj = knex("emprestimos")
+        .count()
+        .join("usuarios", "usuarios.id", "=", "emprestimos.usuario_id")
+        .join("livros", "livros.id", "=", "emprestimos.livro_id")
+        .select(
+          "emprestimos.*",
+          "usuarios.nome",
+          "livros.titulo",
+          "livros.autor"
+        )
+        .groupBy(
+          "emprestimos.id",
+          "usuarios.nome",
+          "livros.titulo",
+          "livros.autor"
+        );
 
-      if (usuario_id) {
+      if (usuario) {
         query
-          .where({ usuario_id })
+          .where("usuarios.nome", "ilike", `%${usuario}%`)
           .limit(limit)
           .offset((page - 1) * limit);
 
-        countObj.where({ usuario_id });
+        countObj.where("usuarios.nome", "ilike", `%${usuario}%`);
       }
 
-      if (livro_id) {
+      if (titulo) {
         query
-          .where({ livro_id })
+          .where("livros.titulo", "ilike", `%${titulo}%`)
           .limit(limit)
           .offset((page - 1) * limit);
 
-        countObj.where({ livro_id });
+        countObj.where("livros.titulo", "ilike", `%${titulo}%`);
       }
 
       if (data_para_devolucao) {
@@ -113,14 +142,8 @@ module.exports = {
     const {
       usuario_id,
       livro_id,
-      atendente_id,
       data_de_retirada,
       data_para_devolucao,
-      renovacao,
-      data_da_renovacao,
-      renovacao_quantidade,
-      devolvido,
-      data_da_devolucao,
     } = req.body;
 
     const trx = await knex.transaction();
@@ -142,14 +165,9 @@ module.exports = {
       await trx("emprestimos").insert({
         usuario_id,
         livro_id,
-        atendente_id,
-        data_de_retirada,
+        atendente_id: req.usuario.id,
+        data_de_retirada: new Date(),
         data_para_devolucao,
-        renovacao,
-        data_da_renovacao,
-        renovacao_quantidade,
-        devolvido,
-        data_da_devolucao,
       });
 
       await trx("livros")
