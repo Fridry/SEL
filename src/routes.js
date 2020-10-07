@@ -174,7 +174,8 @@ routes
         renovacao: Joi.boolean(),
         devolvido: Joi.boolean(),
         data_da_renovacao: Joi.date(),
-        data_da_devolucao: Joi.date(),
+        data_da_renovacao: Joi.date(),
+        data_para_devolucao: Joi.date(),
       }),
       [Segments.PARAMS]: Joi.object().keys({
         id: Joi.number().required(),

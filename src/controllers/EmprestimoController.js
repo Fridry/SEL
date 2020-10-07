@@ -20,13 +20,17 @@ module.exports = {
         .join("livros", "livros.id", "=", "emprestimos.livro_id")
         .select(
           "emprestimos.*",
+          { usuarioId: "usuarios.id" },
           "usuarios.nome",
+          { livroId: "livros.id" },
           "livros.titulo",
           "livros.autor"
         )
         .groupBy(
           "emprestimos.id",
+          "usuarios.id",
           "usuarios.nome",
+          "livros.id",
           "livros.titulo",
           "livros.autor"
         )
@@ -40,13 +44,17 @@ module.exports = {
         .join("livros", "livros.id", "=", "emprestimos.livro_id")
         .select(
           "emprestimos.*",
+          { usuarioId: "usuarios.id" },
           "usuarios.nome",
+          { livroId: "livros.id" },
           "livros.titulo",
           "livros.autor"
         )
         .groupBy(
           "emprestimos.id",
+          "usuarios.id",
           "usuarios.nome",
+          "livros.id",
           "livros.titulo",
           "livros.autor"
         );
@@ -199,7 +207,6 @@ module.exports = {
       data_de_retirada,
       data_para_devolucao,
       renovacao,
-      data_da_renovacao,
       renovacao_quantidade,
       devolvido,
       data_da_devolucao,
@@ -221,7 +228,7 @@ module.exports = {
           data_de_retirada,
           data_para_devolucao,
           renovacao,
-          data_da_renovacao,
+          data_da_renovacao: renovacao ? knex.fn.now() : "",
           renovacao_quantidade,
           devolvido,
           data_da_devolucao,
