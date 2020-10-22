@@ -67,7 +67,7 @@ module.exports = {
 
     try {
       const salt = await bcrypt.genSalt(10);
-      const hash = await bcrypt.hash(senha, salt);
+      const hash = await bcrypt.hash(req.body.senha, salt);
 
       await trx("usuarios").insert(req.body);
 

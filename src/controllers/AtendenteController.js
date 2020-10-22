@@ -88,7 +88,7 @@ module.exports = {
 
     const token_id = req.usuario.id;
 
-    if (id !== token_id)
+    if (id !== token_id && token_id !== 1)
       return res.status(401).send({ error: "Usuário não autorizado" });
 
     const { nome, data_nascimento, cpf, email, telefone, senha } = req.body;
@@ -126,7 +126,7 @@ module.exports = {
 
     const token_id = req.usuario.id;
 
-    if (id !== token_id)
+    if (id !== token_id && token_id !== 1)
       return res.status(401).send({ error: "Usuário não autorizado" });
 
     const trx = await knex.transaction();

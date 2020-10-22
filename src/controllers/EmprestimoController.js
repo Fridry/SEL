@@ -12,34 +12,15 @@ module.exports = {
       limit = 10,
       orderCol = "id",
       order = "asc",
+      devolvido,
+      devolvidoStatus,
     } = req.query;
 
     try {
       const query = knex("emprestimos")
-        .join("usuarios", "usuarios.id", "=", "emprestimos.usuario_id")
-        .join("livros", "livros.id", "=", "emprestimos.livro_id")
-        .select(
-          "emprestimos.*",
-          { usuarioId: "usuarios.id" },
-          "usuarios.nome",
-          { livroId: "livros.id" },
-          "livros.titulo",
-          "livros.autor"
-        )
-        .groupBy(
-          "emprestimos.id",
-          "usuarios.id",
-          "usuarios.nome",
-          "livros.id",
-          "livros.titulo",
-          "livros.autor"
-        )
         .limit(limit)
         .offset((page - 1) * limit)
-        .orderBy(orderCol, order);
-
-      const countObj = knex("emprestimos")
-        .count()
+        .orderBy(orderCol, order)
         .join("usuarios", "usuarios.id", "=", "emprestimos.usuario_id")
         .join("livros", "livros.id", "=", "emprestimos.livro_id")
         .select(
@@ -59,6 +40,8 @@ module.exports = {
           "livros.autor"
         );
 
+      const countObj = knex("emprestimos").count();
+
       if (usuario) {
         query
           .where("usuarios.nome", "ilike", `%${usuario}%`)
@@ -75,6 +58,15 @@ module.exports = {
           .offset((page - 1) * limit);
 
         countObj.where("livros.titulo", "ilike", `%${titulo}%`);
+      }
+
+      if (devolvido) {
+        query
+          .where({ devolvido: devolvidoStatus })
+          .limit(limit)
+          .offset((page - 1) * limit);
+
+        countObj.where({ devolvido: devolvidoStatus });
       }
 
       if (data_para_devolucao) {
@@ -228,10 +220,10 @@ module.exports = {
           data_de_retirada,
           data_para_devolucao,
           renovacao,
-          data_da_renovacao: renovacao ? knex.fn.now() : "",
+          data_da_renovacao: renovacao ? knex.fn.now() : null,
           renovacao_quantidade,
           devolvido,
-          data_da_devolucao,
+          data_da_devolucao: devolvido ? knex.fn.now() : null,
           updated_at: knex.fn.now(),
         })
         .where({ id });

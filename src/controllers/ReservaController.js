@@ -35,26 +35,9 @@ module.exports = {
         .offset((page - 1) * limit)
         .orderBy(orderCol, order);
 
-      const countObj = knex("reservas")
-        .count()
-        .join("usuarios", "usuarios.id", "=", "reservas.usuario_id")
-        .join("livros", "livros.id", "=", "reservas.livro_id")
-        .select(
-          "reservas.*",
-          "usuarios.nome",
-          "usuarios.telefone",
-          "usuarios.email",
-          "livros.titulo",
-          "livros.autor"
-        )
-        .groupBy(
-          "reservas.id",
-          "usuarios.nome",
-          "usuarios.email",
-          "usuarios.telefone",
-          "livros.titulo",
-          "livros.autor"
-        );
+      const countObj = knex("reservas").count();
+
+      console.log(countObj);
 
       if (usuario) {
         query
