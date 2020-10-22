@@ -91,25 +91,19 @@ module.exports = {
     if (id !== token_id && token_id !== 1)
       return res.status(401).send({ error: "Usuário não autorizado" });
 
-    const { nome, data_nascimento, cpf, email, telefone, senha } = req.body;
+    const { senha } = req.body;
 
     const trx = await knex.transaction();
 
     try {
-      const salt = await bcrypt.genSalt(10);
-      const hash = await bcrypt.hash(senha, salt);
+      if (senha) {
+        const salt = await bcrypt.genSalt(10);
+        const hash = await bcrypt.hash(senha, salt);
 
-      await trx("atendentes")
-        .update({
-          nome,
-          data_nascimento,
-          cpf,
-          email,
-          telefone,
-          senha: hash,
-          updated_at: knex.fn.now(),
-        })
-        .where({ id });
+        req.body.senha = hash;
+      }
+
+      await trx("atendentes").update(req.body).where({ id });
 
       await trx.commit();
 
@@ -162,13 +156,15 @@ module.exports = {
           error: "A senha informada está incorreta",
         });
 
-      const payload = { id: usuario.id, role: "atendente" };
+      const id = usuario.id;
+
+      const payload = { id, role: "atendente" };
 
       const token = jwt.sign(payload, process.env.SECRET, {
         expiresIn: "7d",
       });
 
-      return res.json(token);
+      return res.json({ token, id });
     } catch (error) {
       next(error);
     }
